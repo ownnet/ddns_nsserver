@@ -1,0 +1,22 @@
+{
+  "name": "ddns_server",
+  "version": "0.1.0",
+  "description": "a ddns server",
+  "main": "server.js",
+  "dependencies": {
+    "dnsd": "^0.9.6",
+    "sqlite": "^2.3.0",
+    "sqlite3": "^3.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "flag",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zjqzxc/ddns_server"
+  }
+}
