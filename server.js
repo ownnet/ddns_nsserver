@@ -25,7 +25,10 @@ function handler(req, res) {
       rst.forEach(function(item,key){
       if(item.type == 'A') {
         res.answer.push({name:item.name, type:'A', data:item.value, 'ttl':item.ttl})
+      }else{
+        res.answer.push({name:item.name, type:item.type, data:item.value, 'ttl':item.ttl})
       }
+      
     });
     //console.log(res);
     var time = new Date();
