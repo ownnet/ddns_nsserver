@@ -8,7 +8,7 @@ Debian8安装可参考[这篇博客](http://o00o.site/archives/69)的"0x03 使�
 git clone或http方式下载并解压本仓库
 ### 程序安装
 1. `npm install`
-2. 将main.bak.db重命名未main.db
+2. 将main.bak.db重命名为main.db
 
 ### 运行
 两种方法：  
