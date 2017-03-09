@@ -17,6 +17,6 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git://github.com/zjqzxc/ddns_server"
+    "url": "git://github.com/ownnet/ddns_nsserver"
   }
 }
