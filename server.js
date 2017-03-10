@@ -7,15 +7,14 @@ server.zone('flagplus.net', 'ns1.flagplus.net', 'i@flagplus.net', 'now', '2h', '
       .listen(53, '0.0.0.0')
 console.log('Server running at 0.0.0.0:53')
 
-function handler(req, res) {
-  //console.log('%s:%s/%s %j', req.connection.remoteAddress, req.connection.remotePort, req.connection.type, req)
-  res.question.forEach(function(item,index){
-      db.all("SELECT * FROM record WHERE host='" + item.name + "'",function(err,row){
+function getRecord(req,res,item,index,host){
+  db.all("SELECT * FROM record WHERE host='" + host + "'",function(err,row){
+    if(row.length != 0){
       var rst = new Array();
       row.forEach(function(v,k){
         if(v.status == 1){
           rst.push({
-          name:item.name,
+          name:host,
           value:v.value,
           ttl:v.ttl,
           type:v.type
@@ -23,19 +22,32 @@ function handler(req, res) {
         }    
       });
       rst.forEach(function(item,key){
-      if(item.type == 'A') {
-        res.answer.push({name:item.name, type:'A', data:item.value, 'ttl':item.ttl})
-      }else{
-        res.answer.push({name:item.name, type:item.type, data:item.value, 'ttl':item.ttl})
-      }
+        res.answer.push({name:host, type:item.type, data:item.value, 'ttl':item.ttl})  
+      }); 
+      res.end();
+      //console.log(res);
+      var time = new Date();
+      var time_str = time.getFullYear() + '-' + time.getMonth()+1 + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getMinutes() + ':' +time.getSeconds();
+      console.log('%s %s:%s/%s question=%j answer=%j', time_str, req.connection.remoteAddress, req.connection.remotePort, req.connection.type, res.question, res.answer)
+    }else{
       
-    });
-    //console.log(res);
-    var time = new Date();
-    var time_str = time.getFullYear() + '-' + time.getMonth()+1 + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getMinutes() + ':' +time.getSeconds();
-    console.log('%s %s:%s/%s question=%j answer=%j', time_str, req.connection.remoteAddress, req.connection.remotePort, req.connection.type, res.question, res.answer)
-    res.end();
-    });    
+      name_arr = host.split(".");
+      if(name_arr.length > 1){
+        host = name_arr.slice(1).join(".");
+        console.log(name_arr + ' Not Found! Try '+ host);
+        getRecord(req,res,item,index,host);
+      }else{
+        console.log('Not Found');
+      }
+    }  
+
+  }); 
+}
+
+
+function handler(req, res) {
+  res.question.forEach(function(item,index){
+      getRecord(req,res,item,index,item.name)       
   });
 }
 
