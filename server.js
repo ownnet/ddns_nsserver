@@ -1,10 +1,12 @@
 var dnsd = require('dnsd');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('./main.db');
+var config = require('./config')
+
+var db = new sqlite3.Database(config.db_path);
 
 var server = dnsd.createServer(handler)
-server.zone('flagplus.net', 'ns1.flagplus.net', 'i@flagplus.net', 'now', '2h', '30m', '2w', '10m')
-      .listen(53, '0.0.0.0')
+server.zone(config.zone, config.server, config.admin, config.serial, config.refresh, config.retry, config.expire, config.ttl)
+      .listen(config.listen_port, config.listen_ip)
 console.log('Server running at 0.0.0.0:53')
 
 function getRecord(req,res,item,index,host){
@@ -44,11 +46,8 @@ function getRecord(req,res,item,index,host){
   }); 
 }
 
-
 function handler(req, res) {
   res.question.forEach(function(item,index){
       getRecord(req,res,item,index,item.name)       
   });
 }
-
-
